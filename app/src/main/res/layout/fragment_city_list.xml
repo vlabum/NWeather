@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.RecyclerView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/fragment_city_list_id"
+        android:name="ru.vlabum.android.apps.nweather.CityListFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".CityFragment"
+        tools:listitem="@layout/fragment_city">
+
+</android.support.v7.widget.RecyclerView>
