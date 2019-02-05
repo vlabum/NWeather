@@ -1,8 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/action_settings"
-          android:title="@string/action_settings"
-          android:orderInCategory="100"
-          app:showAsAction="never"/>
+<menu
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/main_menu">
+
+    <group android:checkableBehavior="all">
+
+        <item android:id="@+id/action_menu_load_icons"
+              android:title="@string/action_menu_load_icons"
+              android:orderInCategory="100"
+              app:showAsAction="never"/>
+
+        <item android:id="@+id/action_menu_load_forecast"
+              android:title="@string/action_menu_load_forecast"
+              android:orderInCategory="110"
+              app:showAsAction="never"/>
+
+    </group>
+
 </menu>
