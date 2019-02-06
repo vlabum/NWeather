@@ -10,6 +10,8 @@
     <string name="nav_list_cities">Список городов</string>
     <string name="nav_about">О программе</string>
     <string name="nav_weather">Погода</string>
+    <string name="celsium">℃</string>
+    <string name="perc">%</string>
 
     <string name="hello_blank_fragment_about">Hello blank fragment about</string>
     <string name="hello_blank_fragment_manage_city">Hello blank fragment Manage City</string>

@@ -1,4 +1,4 @@
-package ru.vlabum.android.apps.nweather.dummy
+package ru.vlabum.android.apps.nweather.data
 
 import java.util.*
 

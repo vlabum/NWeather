@@ -1,6 +1,7 @@
 package ru.vlabum.android.apps.nweather;
 
 import android.app.Application;
+import ru.vlabum.android.apps.nweather.data.Repository;
 
 public class App extends Application {
 
