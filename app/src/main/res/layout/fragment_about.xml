@@ -11,4 +11,9 @@
             android:layout_height="match_parent"
             android:text="@string/hello_blank_fragment_about"/>
 
+    <ru.vlabum.android.apps.nweather.MyView
+            android:layout_height="100dp"
+            android:layout_width="100dp"
+    />
+
 </FrameLayout>

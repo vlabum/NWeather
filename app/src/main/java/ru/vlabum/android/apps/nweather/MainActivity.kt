@@ -1,21 +1,65 @@
 package ru.vlabum.android.apps.nweather
 
+import android.content.Context
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
-import ru.vlabum.android.apps.nweather.dummy.CityContent
+import kotlinx.android.synthetic.main.nav_header_main.*
+import ru.vlabum.android.apps.nweather.data.CityContent
 
 class MainActivity : AppCompatActivity(),
     NavigationView.OnNavigationItemSelectedListener,
-    CityListFragment.OnListFragmentInteractionListener {
+    CityListFragment.OnListFragmentInteractionListener,
+    SensorEventListener {
+
+    val LOG_CLASS_NAME = this::class.java.name
+
+    private lateinit var sensorManager: SensorManager
+    private var sensor_temp: Sensor? = null
+    private var sensor_humidity: Sensor? = null
+
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+        return
+    }
+
+    override fun onSensorChanged(event: SensorEvent?) {
+        val sensor = event?.sensor ?: return
+        when (sensor.type) {
+            Sensor.TYPE_AMBIENT_TEMPERATURE -> {
+                Log.v(
+                    LOG_CLASS_NAME,
+                    String.format("onSensorChanged TYPE_AMBIENT_TEMPERATURE value = %f", event.values[0])
+                )
+                nav_header_main_current_temp?.text =
+                        String.format("%s%s", event.values[0].toInt().toString(), getString(R.string.celsium))
+                return
+            }
+            Sensor.TYPE_RELATIVE_HUMIDITY -> {
+                Log.v(
+                    LOG_CLASS_NAME,
+                    String.format("onSensorChanged TYPE_RELATIVE_HUMIDITY value = %f", event.values[0])
+                )
+                nav_header_main_current_humidity?.text =
+                        String.format("%s%s", event.values[0].toInt().toString(), getString(R.string.perc))
+                return
+            }
+        }
+    }
+
+
     override fun onListFragmentInteraction(item: CityContent.CityItem?) {
         Toast.makeText(App.getInstance(), "onListFragmentInteraction", Toast.LENGTH_LONG).show()
     }
@@ -39,6 +83,27 @@ class MainActivity : AppCompatActivity(),
         nav_view.setNavigationItemSelectedListener(this)
 
         supportFragmentManager.beginTransaction().replace(R.id.container, CityListFragment()).commit()
+
+
+        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+
+        sensor_temp = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE)
+        sensor_humidity = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY)
+
+        val sensorsList = sensorManager.getSensorList(Sensor.TYPE_ALL)
+        sensorsList.forEach {
+            Log.v(LOG_CLASS_NAME, String.format("sensor_name = %s", it.name))
+        }
+        if (sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE) != null) {
+            Log.v(LOG_CLASS_NAME, String.format("TYPE_AMBIENT_TEMPERATURE %s ", "имеется"))
+        } else {
+            Log.v(LOG_CLASS_NAME, String.format("TYPE_AMBIENT_TEMPERATURE %s ", "отсутствует"))
+        }
+        if (sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY) != null) {
+            Log.v(LOG_CLASS_NAME, String.format("TYPE_RELATIVE_HUMIDITY %s ", "имеется"))
+        } else {
+            Log.v(LOG_CLASS_NAME, String.format("TYPE_RELATIVE_HUMIDITY %s ", "отсутствует"))
+        }
     }
 
     override fun onBackPressed() {
@@ -92,5 +157,16 @@ class MainActivity : AppCompatActivity(),
 
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    override fun onResume() {
+        super.onResume()
+        sensor_temp?.also { v -> sensorManager.registerListener(this, v, SensorManager.SENSOR_DELAY_NORMAL) }
+        sensor_humidity?.also { v -> sensorManager.registerListener(this, v, SensorManager.SENSOR_DELAY_UI) }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        sensorManager.unregisterListener(this)
     }
 }

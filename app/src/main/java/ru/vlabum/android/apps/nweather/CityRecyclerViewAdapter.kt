@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import kotlinx.android.synthetic.main.fragment_city.view.*
 import ru.vlabum.android.apps.nweather.CityListFragment.OnListFragmentInteractionListener
-import ru.vlabum.android.apps.nweather.dummy.CityContent.CityItem
+import ru.vlabum.android.apps.nweather.data.CityContent.CityItem
 
 /**
  * [RecyclerView.Adapter] that can display a [CityItem] and makes a call to the

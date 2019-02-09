@@ -10,8 +10,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-import ru.vlabum.android.apps.nweather.dummy.CityContent
-import ru.vlabum.android.apps.nweather.dummy.CityContent.CityItem
+import ru.vlabum.android.apps.nweather.data.CityContent
+import ru.vlabum.android.apps.nweather.data.CityContent.CityItem
 
 /**
  * A fragment representing a list of Items.

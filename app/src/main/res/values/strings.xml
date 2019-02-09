@@ -10,6 +10,8 @@
     <string name="nav_list_cities">List of cities</string>
     <string name="nav_about">About</string>
     <string name="nav_weather">Weather</string>
+    <string name="celsium">℃</string>
+    <string name="perc">%</string>
 
     <string name="hello_blank_fragment_about">Hello blank fragment about</string>
     <string name="hello_blank_fragment_manage_city">Hello blank fragment Manage City</string>
