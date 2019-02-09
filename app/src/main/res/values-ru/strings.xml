@@ -13,6 +13,15 @@
     <string name="celsium">℃</string>
     <string name="perc">%</string>
 
+    <string name="weather_wind">Ветер:</string>
+    <string name="weather_wind_dimen">м/с</string>
+    <string name="space">____</string>
+    <string name="weather_pressure">Давление:</string>
+    <string name="weather_pressure_dimen">мм. рт. ст.</string>
+    <string name="weather_humidity">Влажность:</string>
+    <string name="weather_humidity_dimen">%</string>
+    <string name="weather_icon">WeatherIcon</string>
+
     <string name="hello_blank_fragment_about">Hello blank fragment about</string>
     <string name="hello_blank_fragment_manage_city">Hello blank fragment Manage City</string>
 </resources>

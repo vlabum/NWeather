@@ -6,6 +6,7 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
+import android.os.StrictMode
 import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
 import android.support.v4.view.GravityCompat
@@ -61,13 +62,29 @@ class MainActivity : AppCompatActivity(),
 
 
     override fun onListFragmentInteraction(item: CityContent.CityItem?) {
-        Toast.makeText(App.getInstance(), "onListFragmentInteraction", Toast.LENGTH_LONG).show()
+        Toast.makeText(
+            App.getInstance(),
+            String.format("onListFragmentInteraction %s", item?.content),
+            Toast.LENGTH_LONG
+        ).show()
+        val bundle = Bundle()
+        bundle.putString("cityName", item?.content)
+        val dataWeatherFragment = DataWeatherFragment()
+        dataWeatherFragment.arguments = bundle
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.container, dataWeatherFragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+
+        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
+        StrictMode.setThreadPolicy(policy)
 
         fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
