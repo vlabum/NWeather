@@ -24,4 +24,9 @@
 
     <string name="hello_blank_fragment_about">Hello blank fragment about</string>
     <string name="hello_blank_fragment_manage_city">Hello blank fragment Manage City</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="audio_player_play">Играть</string>
+    <string name="audio_player_stop">Пауза</string>
+    <string name="nav_music">Музыка</string>
 </resources>

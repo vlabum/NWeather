@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import com.squareup.picasso.Picasso
 import ru.vlabum.android.apps.nweather.dataweather.Main
 
@@ -47,8 +48,11 @@ class DataWeatherFragment : Fragment() {
         imageView1 = view?.findViewById(R.id.imageView1)
 
         val listener = object : RequesterWeather.OnRequestListener {
-            override fun onComlete() {
-                updateView()
+            override fun onComlete(exception: Exception?) {
+                if (exception != null)
+                    Toast.makeText(App.getInstance(), "Запрос погоды не удался", Toast.LENGTH_LONG).show()
+                else
+                    updateView()
             }
         }
 
