@@ -13,6 +13,15 @@
     <string name="celsium">℃</string>
     <string name="perc">%</string>
 
+    <string name="weather_wind">Wind:</string>
+    <string name="weather_wind_dimen">m/s</string>
+    <string name="space">____</string>
+    <string name="weather_pressure">Pressure:</string>
+    <string name="weather_pressure_dimen">hPa</string>
+    <string name="weather_humidity">Humidity:</string>
+    <string name="weather_humidity_dimen">%</string>
+    <string name="weather_icon">WeatherIcon</string>
+
     <string name="hello_blank_fragment_about">Hello blank fragment about</string>
     <string name="hello_blank_fragment_manage_city">Hello blank fragment Manage City</string>
 </resources>

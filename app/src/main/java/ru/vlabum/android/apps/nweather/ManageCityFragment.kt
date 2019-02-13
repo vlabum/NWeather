@@ -27,5 +27,4 @@ class ManageCityFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_manage_city, container, false)
     }
 
-
 }

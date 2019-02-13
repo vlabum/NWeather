@@ -11,13 +11,15 @@ import android.view.View
 open class MyView : View {
 
     private val RADIUS_D = 5f
-    private val RADIUS_ARC = 2.5f
+    private val HALF_ARC_W = 2.5f
+    private val HALF_ARC_H = 2f
 
     private lateinit var paint: Paint
     private var radius: Float = 0f
     private var centerWith: Float = 0f
     private var centerHeight: Float = 0f
     private lateinit var rect: RectF
+    private lateinit var rectHi: RectF
 
     constructor(context: Context?) : super(context) {
         init()
@@ -41,24 +43,32 @@ open class MyView : View {
         centerWith = w / 2f
         centerHeight = h / 2f
         radius = (if (w < h) w / RADIUS_D else h / RADIUS_D)
-        val rectHalf = (if (w < h) w / RADIUS_ARC else h / RADIUS_ARC)
+        val rectHalfW = (if (w < h) w / HALF_ARC_W else h / HALF_ARC_W)
+        val rectHalfH = (if (w < h) w / HALF_ARC_H else h / HALF_ARC_H)
         rect = RectF(
-            centerWith - rectHalf,
-            centerHeight - rectHalf,
-            centerWith + rectHalf,
-            centerHeight + rectHalf
+            centerWith - rectHalfW,
+            centerHeight - rectHalfW,
+            centerWith + rectHalfW,
+            centerHeight + rectHalfW
+        )
+        rectHi = RectF(
+            centerWith - rectHalfH,
+            centerHeight - rectHalfH,
+            centerWith + rectHalfH,
+            centerHeight + rectHalfH
         )
     }
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         canvas?.drawCircle(centerWith, centerHeight, radius, paint)
-        canvas?.drawArc(rect, -10f, 20f, true, paint)
-        canvas?.drawArc(rect, 40f, 10f, true, paint)
+        canvas?.drawArc(rect, 350f, 20f, true, paint)
         canvas?.drawArc(rect, 80f, 20f, true, paint)
-        canvas?.drawArc(rect, 130f, 10f, true, paint)
         canvas?.drawArc(rect, 170f, 20f, true, paint)
-        canvas?.drawArc(rect, 220f, 10f, true, paint)
         canvas?.drawArc(rect, 260f, 20f, true, paint)
+        canvas?.drawArc(rect, 40f, 10f, true, paint)
+        canvas?.drawArc(rect, 220f, 10f, true, paint)
+        canvas?.drawArc(rectHi, 120f, 10f, true, paint)
+        canvas?.drawArc(rectHi, 300f, 10f, true, paint)
     }
 }
