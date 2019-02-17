@@ -6,7 +6,7 @@
         android:name="ru.vlabum.android.apps.nweather.CityListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".CityFragment"
+        tools:context=".CityListFragment"
         tools:listitem="@layout/fragment_city">
 
 </android.support.v7.widget.RecyclerView>

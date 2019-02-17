@@ -7,9 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import com.squareup.picasso.Picasso
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.jackson.JacksonConverterFactory
 import ru.vlabum.android.apps.nweather.dataweather.Main
+import ru.vlabum.android.apps.nweather.dataweather.OpenWeatherMapService
+import ru.vlabum.android.apps.nweather.dataweather.WeatherCurrent
 
 class DataWeatherFragment : Fragment() {
 
@@ -39,6 +45,7 @@ class DataWeatherFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         if (cityName == null) return
+        DataStorage.instance().setCity(cityName!!)
         weather_temp = view?.findViewById(R.id.weather_temp) as TextView?
         weather_city = view?.findViewById(R.id.weather_city) as TextView?
         weather_precipitation_value = view?.findViewById(R.id.weather_precipitation_value) as TextView?
@@ -47,6 +54,35 @@ class DataWeatherFragment : Fragment() {
         weather_pressure_value = view?.findViewById(R.id.weather_pressure_value) as TextView?
         imageView1 = view?.findViewById(R.id.imageView1)
 
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl(DataStorage.REQ_WEATHER)
+            .addConverterFactory(JacksonConverterFactory.create())
+            .build()
+        val weatherService = retrofit.create(OpenWeatherMapService::class.java)
+
+        val callback = object : Callback<WeatherCurrent> {
+            override fun onResponse(call: Call<WeatherCurrent>, response: Response<WeatherCurrent>) {
+                if (response.body() == null) {
+                    throw NullPointerException()
+                }
+                DataStorage.instance().storeWeatherCurrentO(response.body()!!)
+                updateView()
+            }
+
+            override fun onFailure(call: Call<WeatherCurrent>, t: Throwable) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+        }
+
+        weatherService.getWeatherCurrent(
+            DataStorage.instance().appid,
+            DataStorage.instance().city,
+            DataStorage.instance().lang
+        )
+            .enqueue(callback)
+
+        /*
         val listener = object : RequesterWeather.OnRequestListener {
             override fun onComlete(exception: Exception?) {
                 if (exception != null)
@@ -58,6 +94,7 @@ class DataWeatherFragment : Fragment() {
 
         val requestWeather = RequesterWeather(listener)
         requestWeather.make(cityName!!)
+        */
     }
 
     fun updateView() {
@@ -69,10 +106,7 @@ class DataWeatherFragment : Fragment() {
         weather_wind_value?.text = DataStorage.instance().weatherCurrent?.wind?.getSpeedStr()
         weather_humidity_value?.text = DataStorage.instance().weatherCurrent?.main?.getHumidityStr()
         weather_pressure_value?.text = DataStorage.instance().weatherCurrent?.main?.getPressureStr(
-            if ("ru".equals(
-                    DataStorage.instance().lang
-                )
-            ) Main.TypePressure.HG else Main.TypePressure.PA
+            if ("ru".equals(DataStorage.instance().lang)) Main.TypePressure.HG else Main.TypePressure.PA
         )
         if (App.getInstance()?.repository?.isLoadIcon == true)
             showImage(DataStorage.instance().getUrlImage(DataStorage.TypeQuery.CURRENT))
