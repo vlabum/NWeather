@@ -2,7 +2,6 @@ package ru.vlabum.android.apps.nweather
 
 import android.os.AsyncTask
 import android.util.Log
-import android.widget.Toast
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
@@ -24,12 +23,14 @@ class RequesterWeather(private var listener: OnRequestListener) {
 
     interface OnRequestListener {
         public fun OnRequestListener() {}
-        fun onComlete()
+        fun onComlete(exception: Exception?)
     }
 
     private class Requester(private var listener: OnRequestListener) : AsyncTask<String, String, String>() {
 
         private val LOG_CLASS_NAME = this.javaClass.name
+
+        private var exception: Exception? = null
 
         override fun doInBackground(vararg city: String): String {
             DataStorage.instance().setCity(city[0])
@@ -39,7 +40,7 @@ class RequesterWeather(private var listener: OnRequestListener) {
 
         override fun onPostExecute(result: String?) {
             super.onPostExecute(result)
-            listener.onComlete()
+            listener.onComlete(exception)
         }
 
         fun getWeather(current: DataStorage.TypeQuery) {
@@ -60,7 +61,7 @@ class RequesterWeather(private var listener: OnRequestListener) {
                     DataStorage.instance().storeWeather(response.toString(), current)
                 }
             } catch (e: Exception) {
-                Toast.makeText(App.getInstance(), "Запрос погоды не удался", Toast.LENGTH_LONG).show()
+                exception = e
                 Log.d(LOG_CLASS_NAME, e.toString())
             }
             con.disconnect()

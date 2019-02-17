@@ -24,4 +24,10 @@
 
     <string name="hello_blank_fragment_about">Hello blank fragment about</string>
     <string name="hello_blank_fragment_manage_city">Hello blank fragment Manage City</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="audio_player_play">Play</string>
+    <string name="audio_player_stop">Stop</string>
+    <string name="nav_music">Music</string>
 </resources>

@@ -1,12 +1,14 @@
 package ru.vlabum.android.apps.nweather
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
 import android.os.StrictMode
+import android.preference.PreferenceManager
 import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
 import android.support.v4.view.GravityCompat
@@ -19,6 +21,7 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.nav_header_main.*
+import ru.vlabum.android.apps.nweather.MediaPlayer.AudioPlayerFragment
 import ru.vlabum.android.apps.nweather.data.CityContent
 
 class MainActivity : AppCompatActivity(),
@@ -31,6 +34,7 @@ class MainActivity : AppCompatActivity(),
     private lateinit var sensorManager: SensorManager
     private var sensor_temp: Sensor? = null
     private var sensor_humidity: Sensor? = null
+    private var prefereces: SharedPreferences? = null
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
         return
@@ -99,11 +103,11 @@ class MainActivity : AppCompatActivity(),
 
         nav_view.setNavigationItemSelectedListener(this)
 
+        prefereces = PreferenceManager.getDefaultSharedPreferences(this)
+        restoreConfigData()
+
         supportFragmentManager.beginTransaction().replace(R.id.container, CityListFragment()).commit()
-
-
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-
         sensor_temp = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE)
         sensor_humidity = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY)
 
@@ -121,6 +125,16 @@ class MainActivity : AppCompatActivity(),
         } else {
             Log.v(LOG_CLASS_NAME, String.format("TYPE_RELATIVE_HUMIDITY %s ", "отсутствует"))
         }
+    }
+
+    fun saveConfigData() {
+        prefereces?.edit()?.putBoolean("isLoadIcon", App.getInstance().repository.isLoadIcon)?.apply()
+        prefereces?.edit()?.putBoolean("isForecast5", App.getInstance().repository.isForecast5)?.apply()
+    }
+
+    fun restoreConfigData() {
+        App.getInstance().repository.isLoadIcon = prefereces?.getBoolean("isLoadIcon", true)
+        App.getInstance().repository.isForecast5 = prefereces?.getBoolean("isForecast5", false)
     }
 
     override fun onBackPressed() {
@@ -170,6 +184,9 @@ class MainActivity : AppCompatActivity(),
             R.id.nav_about -> {
                 supportFragmentManager.beginTransaction().replace(R.id.container, AboutFragment()).commit()
             }
+            R.id.nav_player -> {
+                supportFragmentManager.beginTransaction().replace(R.id.container, AudioPlayerFragment()).commit()
+            }
         }
 
         drawer_layout.closeDrawer(GravityCompat.START)
@@ -185,5 +202,6 @@ class MainActivity : AppCompatActivity(),
     override fun onPause() {
         super.onPause()
         sensorManager.unregisterListener(this)
+        saveConfigData()
     }
 }
