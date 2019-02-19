@@ -20,6 +20,14 @@ public class DataStorage {
     public static final String REQ_WEATHER_FORECAST = "forecast";
     private static final String REQ_WEATHER_IMAGE = "https://openweathermap.org/img/w/";
 
+    @Nullable
+    private final String APPID = "634e19e819dc6d0d194b4b71b82d1e63";
+
+    @Nullable
+    public String getAPPID() {
+        return APPID;
+    }
+
     private static volatile DataStorage instance;
 
     @Nullable
@@ -34,13 +42,6 @@ public class DataStorage {
     @Nullable
     private String city = "Chelyabinsk";
 
-    @Nullable
-    public String getAppid() {
-        return appid;
-    }
-
-    @Nullable
-    private String appid = "634e19e819dc6d0d194b4b71b82d1e63"; // TODO: спрятать и заменить id ??
     @Nullable
     private String lang = "ru";
     @Nullable
@@ -147,8 +148,8 @@ public class DataStorage {
         requestWeatherCurrent.append("?");
         requestWeatherCurrent.append("lang=");
         requestWeatherCurrent.append(lang);
-        requestWeatherCurrent.append("&appid=");
-        requestWeatherCurrent.append(appid);
+        requestWeatherCurrent.append("&APPID=");
+        requestWeatherCurrent.append(APPID);
         requestWeatherCurrent.append("&q=");
         requestWeatherCurrent.append(city);
     }
@@ -163,8 +164,8 @@ public class DataStorage {
         requestWeatherForecast.append("?");
         requestWeatherForecast.append("lang=");
         requestWeatherForecast.append(lang);
-        requestWeatherForecast.append("&appid=");
-        requestWeatherForecast.append(appid);
+        requestWeatherForecast.append("&APPID=");
+        requestWeatherForecast.append(APPID);
         requestWeatherForecast.append("&q=");
         requestWeatherForecast.append(city);
         requestWeatherForecast.append("&cnt=");

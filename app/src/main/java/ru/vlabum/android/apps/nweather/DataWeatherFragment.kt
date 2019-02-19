@@ -11,8 +11,6 @@ import com.squareup.picasso.Picasso
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.jackson.JacksonConverterFactory
 import ru.vlabum.android.apps.nweather.dataweather.Main
 import ru.vlabum.android.apps.nweather.dataweather.OpenWeatherMapService
 import ru.vlabum.android.apps.nweather.dataweather.WeatherCurrent
@@ -31,6 +29,9 @@ class DataWeatherFragment : Fragment() {
 
     var cityName: String? = null
 
+    var weatherService: OpenWeatherMapService? = null
+    var call: Call<WeatherCurrent>? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -40,6 +41,29 @@ class DataWeatherFragment : Fragment() {
         cityName = arguments?.getString("cityName")
         if (cityName == null) return null
         return inflater.inflate(R.layout.fragment_data_weather, container, false)
+    }
+
+    private fun startRequest() {
+        weatherService = App.getInstance().retrofitCurrent.create(OpenWeatherMapService::class.java)
+        call = weatherService?.getWeatherCurrent(
+            DataStorage.instance().appid,
+            DataStorage.instance().city,
+            DataStorage.instance().lang
+        )
+        val callback = object : Callback<WeatherCurrent> {
+            override fun onResponse(call: Call<WeatherCurrent>, response: Response<WeatherCurrent>) {
+                if (response.body() == null) {
+                    throw NullPointerException()
+                }
+                DataStorage.instance().storeWeatherCurrentO(response.body()!!)
+                updateView()
+            }
+
+            override fun onFailure(call: Call<WeatherCurrent>, t: Throwable) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+        }
+        call?.enqueue(callback)
     }
 
     override fun onResume() {
@@ -54,34 +78,7 @@ class DataWeatherFragment : Fragment() {
         weather_pressure_value = view?.findViewById(R.id.weather_pressure_value) as TextView?
         imageView1 = view?.findViewById(R.id.imageView1)
 
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl(DataStorage.REQ_WEATHER)
-            .addConverterFactory(JacksonConverterFactory.create())
-            .build()
-        val weatherService = retrofit.create(OpenWeatherMapService::class.java)
-
-        val callback = object : Callback<WeatherCurrent> {
-            override fun onResponse(call: Call<WeatherCurrent>, response: Response<WeatherCurrent>) {
-                if (response.body() == null) {
-                    throw NullPointerException()
-                }
-                DataStorage.instance().storeWeatherCurrentO(response.body()!!)
-                updateView()
-            }
-
-            override fun onFailure(call: Call<WeatherCurrent>, t: Throwable) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-        }
-
-        weatherService.getWeatherCurrent(
-            DataStorage.instance().appid,
-            DataStorage.instance().city,
-            DataStorage.instance().lang
-        )
-            .enqueue(callback)
-
+        startRequest()
         /*
         val listener = object : RequesterWeather.OnRequestListener {
             override fun onComlete(exception: Exception?) {
@@ -106,7 +103,10 @@ class DataWeatherFragment : Fragment() {
         weather_wind_value?.text = DataStorage.instance().weatherCurrent?.wind?.getSpeedStr()
         weather_humidity_value?.text = DataStorage.instance().weatherCurrent?.main?.getHumidityStr()
         weather_pressure_value?.text = DataStorage.instance().weatherCurrent?.main?.getPressureStr(
-            if ("ru".equals(DataStorage.instance().lang)) Main.TypePressure.HG else Main.TypePressure.PA
+            if ("ru".equals(DataStorage.instance().lang))
+                Main.TypePressure.HG
+            else
+                Main.TypePressure.PA
         )
         if (App.getInstance()?.repository?.isLoadIcon == true)
             showImage(DataStorage.instance().getUrlImage(DataStorage.TypeQuery.CURRENT))
@@ -119,6 +119,11 @@ class DataWeatherFragment : Fragment() {
         Picasso.with(App.getInstance())
             .load(urlS)
             .into(imageView1)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        call?.cancel()
     }
 
 }
