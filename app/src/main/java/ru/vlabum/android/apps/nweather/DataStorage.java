@@ -15,8 +15,9 @@ import java.io.IOException;
  */
 public class DataStorage {
 
-    private static final String REQ_WEATHER_CURRENT = "https://api.openweathermap.org/data/2.5/weather?";
-    private static final String REQ_WEATHER_FORECAST = "https://api.openweathermap.org/data/2.5/forecast?";
+    public static final String REQ_WEATHER = "https://api.openweathermap.org/data/2.5/";
+    public static final String REQ_WEATHER_CURRENT = "weather";
+    public static final String REQ_WEATHER_FORECAST = "forecast";
     private static final String REQ_WEATHER_IMAGE = "https://openweathermap.org/img/w/";
 
     private static volatile DataStorage instance;
@@ -32,6 +33,12 @@ public class DataStorage {
 
     @Nullable
     private String city = "Chelyabinsk";
+
+    @Nullable
+    public String getAppid() {
+        return appid;
+    }
+
     @Nullable
     private String appid = "634e19e819dc6d0d194b4b71b82d1e63"; // TODO: спрятать и заменить id ??
     @Nullable
@@ -58,6 +65,10 @@ public class DataStorage {
             }
         }
         return localInstance;
+    }
+
+    public void storeWeatherCurrentO(@NotNull final WeatherCurrent weather) {
+        instance().weatherCurrent = weather;
     }
 
     private static void storeWeatherCurrent(@NotNull final String weather)
@@ -131,7 +142,9 @@ public class DataStorage {
      */
     private void buildRequestWeatherCurrent() {
         requestWeatherCurrent.setLength(0);
+        requestWeatherCurrent.append(REQ_WEATHER);
         requestWeatherCurrent.append(REQ_WEATHER_CURRENT);
+        requestWeatherCurrent.append("?");
         requestWeatherCurrent.append("lang=");
         requestWeatherCurrent.append(lang);
         requestWeatherCurrent.append("&appid=");
@@ -145,7 +158,9 @@ public class DataStorage {
      */
     private void buildRequestWeatherForecast() {
         requestWeatherForecast.setLength(0);
+        requestWeatherForecast.append(REQ_WEATHER);
         requestWeatherForecast.append(REQ_WEATHER_FORECAST);
+        requestWeatherForecast.append("?");
         requestWeatherForecast.append("lang=");
         requestWeatherForecast.append(lang);
         requestWeatherForecast.append("&appid=");
