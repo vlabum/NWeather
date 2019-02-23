@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import kotlinx.android.synthetic.main.fragment_city.view.*
 import ru.vlabum.android.apps.nweather.CityListFragment.OnListFragmentInteractionListener
-import ru.vlabum.android.apps.nweather.data.CityContent.CityItem
+import ru.vlabum.android.apps.nweather.data.CityItem
 
 /**
  * [RecyclerView.Adapter] that can display a [CityItem] and makes a call to the
@@ -39,9 +39,11 @@ class CityRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = mValues[position]
-        holder.mContentView.text = item.content
+        holder.cityName.text = item.name
+        holder.weatherDescr.text = item.descr
+        holder.weatherTemp.text = item.temerature.toString()
 
-        with(holder.mView) {
+        with(holder.itemView) {
             tag = item
             setOnClickListener(mOnClickListener)
         }
@@ -49,11 +51,13 @@ class CityRecyclerViewAdapter(
 
     override fun getItemCount(): Int = mValues.size
 
-    inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
-        val mContentView: TextView = mView.content
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val cityName: TextView = itemView.fragment_city_name
+        val weatherTemp: TextView = itemView.fragment_city_temp
+        val weatherDescr: TextView = itemView.fragment_city_descr
 
         override fun toString(): String {
-            return super.toString() + " '" + mContentView.text + "'"
+            return super.toString() + " '" + cityName.text + "' " + weatherDescr.text
         }
     }
 

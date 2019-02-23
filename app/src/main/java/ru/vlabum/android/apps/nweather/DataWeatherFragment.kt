@@ -11,6 +11,9 @@ import com.squareup.picasso.Picasso
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import ru.vlabum.android.apps.nweather.data.CityContent
+import ru.vlabum.android.apps.nweather.data.CityItem
+import ru.vlabum.android.apps.nweather.data.DatabaseHelper
 import ru.vlabum.android.apps.nweather.dataweather.Main
 import ru.vlabum.android.apps.nweather.dataweather.OpenWeatherMapService
 import ru.vlabum.android.apps.nweather.dataweather.WeatherCurrent
@@ -28,6 +31,7 @@ class DataWeatherFragment : Fragment() {
     var imageView1: ImageView? = null
 
     var cityName: String? = null
+    var cityItem: CityItem? = null
 
     var weatherService: OpenWeatherMapService? = null
     var call: Call<WeatherCurrent>? = null
@@ -37,9 +41,15 @@ class DataWeatherFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+
         cityName = arguments?.getString("cityName")
-        if (cityName == null) return null
+        if (cityName == null) {
+            return null
+        }
+        cityItem = CityContent.getItemByName(cityName)
+        if (cityItem == null) {
+            return null
+        }
         return inflater.inflate(R.layout.fragment_data_weather, container, false)
     }
 
@@ -57,6 +67,7 @@ class DataWeatherFragment : Fragment() {
                 }
                 DataStorage.instance().storeWeatherCurrentO(response.body()!!)
                 updateView()
+                updateItem()
             }
 
             override fun onFailure(call: Call<WeatherCurrent>, t: Throwable) {
@@ -88,10 +99,29 @@ class DataWeatherFragment : Fragment() {
                     updateView()
             }
         }
-
         val requestWeather = RequesterWeather(listener)
         requestWeather.make(cityName!!)
         */
+    }
+
+    fun updateItem() {
+        if (DataStorage.instance().weatherCurrent == null) return
+        if (DataStorage.instance().weatherCurrent?.weather == null) return
+        cityItem?.temerature = DataStorage.instance().weatherCurrent?.main?.getTemp(Main.TypeTemp.CEL)
+        cityItem?.humidity = DataStorage.instance().weatherCurrent?.main?.humidity?.toInt()
+        cityItem?.pressure = DataStorage.instance().weatherCurrent?.main?.pressure?.toInt()
+        cityItem?.descr = DataStorage.instance().weatherCurrent?.weather?.get(0)?.description
+        updateDB()
+    }
+
+    fun updateDB() {
+        val databaseHelper = DatabaseHelper(App.getInstance())
+        val database = databaseHelper.writableDatabase
+        if (database != null && cityItem != null) {
+            databaseHelper.updateCityWeather(database, cityItem!!)
+        }
+        databaseHelper.close()
+        database?.close()
     }
 
     fun updateView() {

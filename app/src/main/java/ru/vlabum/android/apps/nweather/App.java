@@ -2,11 +2,13 @@ package ru.vlabum.android.apps.nweather;
 
 import android.app.Application;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 import ru.vlabum.android.apps.nweather.MediaPlayer.AudioPlayer;
 import ru.vlabum.android.apps.nweather.MediaPlayer.AudioService;
+import ru.vlabum.android.apps.nweather.data.DatabaseHelper;
 import ru.vlabum.android.apps.nweather.data.Repository;
 
 public class App extends Application {
@@ -18,10 +20,6 @@ public class App extends Application {
     private AudioPlayer audioPlayer;
 
     private Retrofit retrofitCurrent;
-
-    public static App getInstance() {
-        return instance;
-    }
 
     @Override
     public void onCreate() {
@@ -37,6 +35,23 @@ public class App extends Application {
                 .baseUrl(DataStorage.REQ_WEATHER)
                 .addConverterFactory(JacksonConverterFactory.create())
                 .build();
+        getCitiesFromDB();
+    }
+
+    private void getCitiesFromDB() {
+        DatabaseHelper databaseHelper = new DatabaseHelper(this);
+        SQLiteDatabase database = databaseHelper.getWritableDatabase();
+        if (database != null) {
+            databaseHelper.getAllCities(database);
+        }
+        databaseHelper.close();
+        if (database != null) {
+            database.close();
+        }
+    }
+
+    public static App getInstance() {
+        return instance;
     }
 
     public Repository getRepository() {

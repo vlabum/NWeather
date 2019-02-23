@@ -2,6 +2,7 @@ package ru.vlabum.android.apps.nweather
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.database.sqlite.SQLiteDatabase
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -22,7 +23,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.nav_header_main.*
 import ru.vlabum.android.apps.nweather.MediaPlayer.AudioPlayerFragment
-import ru.vlabum.android.apps.nweather.data.CityContent
+import ru.vlabum.android.apps.nweather.data.CityItem
+import ru.vlabum.android.apps.nweather.data.DatabaseHelper
 
 class MainActivity : AppCompatActivity(),
     NavigationView.OnNavigationItemSelectedListener,
@@ -35,6 +37,9 @@ class MainActivity : AppCompatActivity(),
     private var sensor_temp: Sensor? = null
     private var sensor_humidity: Sensor? = null
     private var prefereces: SharedPreferences? = null
+
+    private var databaseHelper: DatabaseHelper? = null
+    private var database: SQLiteDatabase? = null
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
         return
@@ -65,14 +70,14 @@ class MainActivity : AppCompatActivity(),
     }
 
 
-    override fun onListFragmentInteraction(item: CityContent.CityItem?) {
+    override fun onListFragmentInteraction(item: CityItem?) {
         Toast.makeText(
             App.getInstance(),
-            String.format("onListFragmentInteraction %s", item?.content),
+            String.format("onListFragmentInteraction %s", item?.name),
             Toast.LENGTH_LONG
         ).show()
         val bundle = Bundle()
-        bundle.putString("cityName", item?.content)
+        bundle.putString("cityName", item?.name)
         val dataWeatherFragment = DataWeatherFragment()
         dataWeatherFragment.arguments = bundle
         supportFragmentManager
@@ -107,6 +112,7 @@ class MainActivity : AppCompatActivity(),
         restoreConfigData()
 
         supportFragmentManager.beginTransaction().replace(R.id.container, CityListFragment()).commit()
+
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         sensor_temp = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE)
         sensor_humidity = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY)
@@ -204,4 +210,11 @@ class MainActivity : AppCompatActivity(),
         sensorManager.unregisterListener(this)
         saveConfigData()
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        databaseHelper?.close()
+        database?.close()
+    }
+
 }

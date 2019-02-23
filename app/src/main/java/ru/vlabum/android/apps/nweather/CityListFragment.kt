@@ -11,7 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 
 import ru.vlabum.android.apps.nweather.data.CityContent
-import ru.vlabum.android.apps.nweather.data.CityContent.CityItem
+import ru.vlabum.android.apps.nweather.data.CityItem
 
 /**
  * A fragment representing a list of Items.
@@ -20,14 +20,11 @@ import ru.vlabum.android.apps.nweather.data.CityContent.CityItem
  */
 class CityListFragment : Fragment() {
 
-    // TODO: Customize parameters
     private var columnCount = 1
-
     private var listener: OnListFragmentInteractionListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         arguments?.let {
             columnCount = it.getInt(ARG_COLUMN_COUNT)
         }
