@@ -5,6 +5,7 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import ru.vlabum.android.apps.nweather.DataStorage
 
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
@@ -58,8 +59,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     fun addCity(sqliteWritableDatabase: SQLiteDatabase, name: String) {
         val values = ContentValues()
         values.put(COLUMN_CITY_NAME, name)
-//        sqliteWritableDatabase.insert(TABLE_CITY, null, values)
-//        Sorry. I'm sql-man. По сути внутри insert запрос собирается практически так же.
         val sqlStr = StringBuilder()
             .append("insert into ")
             .append(TABLE_CITY)
@@ -79,6 +78,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     }
 
     fun getAllCities(database: SQLiteDatabase): ArrayList<CityItem> {
+        CityContent.addItem(CityItem(DataStorage.CITY_GPS, 0, 0, 0, ""))
         val cityItems = ArrayList<CityItem>()
         var cursor: Cursor? = null
         try {

@@ -14,4 +14,12 @@ public interface OpenWeatherMapService {
             @Query("lang") String lang
     );
 
+    @GET(DataStorage.REQ_WEATHER_CURRENT)
+    Call<WeatherCurrent> getWeatherCurrentCoord(
+            @Query("appid") String appid,
+            @Query("lat") Double lat,
+            @Query("lon") Double lon,
+            @Query("lang") String lang
+    );
+
 }

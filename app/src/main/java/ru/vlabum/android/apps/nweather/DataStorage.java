@@ -15,6 +15,7 @@ import java.io.IOException;
  */
 public class DataStorage {
 
+    public static final String CITY_GPS = "GPS";
     public static final String REQ_WEATHER = "https://api.openweathermap.org/data/2.5/";
     public static final String REQ_WEATHER_CURRENT = "weather";
     public static final String REQ_WEATHER_FORECAST = "forecast";
@@ -50,6 +51,24 @@ public class DataStorage {
     private StringBuilder requestWeatherCurrent = new StringBuilder();
     @NotNull
     private StringBuilder requestWeatherForecast = new StringBuilder();
+    private double latitude;
+    private double longitude;
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
 
     private DataStorage() {
         buildRequestWeatherCurrent();

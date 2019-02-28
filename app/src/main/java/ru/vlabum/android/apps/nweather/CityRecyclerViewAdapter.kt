@@ -41,7 +41,7 @@ class CityRecyclerViewAdapter(
         val item = mValues[position]
         holder.cityName.text = item.name
         holder.weatherDescr.text = item.descr
-        holder.weatherTemp.text = item.temerature.toString()
+        holder.weatherTemp.text = String.format("%d %s", item.temerature, App.getInstance().getString(R.string.celsium))
 
         with(holder.itemView) {
             tag = item

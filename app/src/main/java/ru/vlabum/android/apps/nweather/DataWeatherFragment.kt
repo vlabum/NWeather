@@ -55,11 +55,20 @@ class DataWeatherFragment : Fragment() {
 
     private fun startRequest() {
         weatherService = App.getInstance().retrofitCurrent.create(OpenWeatherMapService::class.java)
-        call = weatherService?.getWeatherCurrent(
-            DataStorage.instance().appid,
-            DataStorage.instance().city,
-            DataStorage.instance().lang
-        )
+        call = if (DataStorage.CITY_GPS == cityName) {
+            weatherService?.getWeatherCurrentCoord(
+                DataStorage.instance().appid,
+                DataStorage.instance().latitude,
+                DataStorage.instance().longitude,
+                DataStorage.instance().lang
+            )
+        } else {
+            weatherService?.getWeatherCurrent(
+                DataStorage.instance().appid,
+                DataStorage.instance().city,
+                DataStorage.instance().lang
+            )
+        }
         val callback = object : Callback<WeatherCurrent> {
             override fun onResponse(call: Call<WeatherCurrent>, response: Response<WeatherCurrent>) {
                 if (response.body() == null) {
